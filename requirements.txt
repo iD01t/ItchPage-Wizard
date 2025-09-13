@@ -1,0 +1,8 @@
+# Core runtime
+PySimpleGUI
+Pillow
+imageio
+numpy
+
+# Test tooling
+pytest
