@@ -1,0 +1,88 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        include:
+          - os: windows-latest
+            spec: itchpage-wizard-win.spec
+            asset_name: ItchPageWizard-Windows.zip
+            build_dir: dist/ItchPageWizard
+          - os: macos-latest
+            spec: itchpage-wizard-mac.spec
+            asset_name: ItchPageWizard-macOS.zip
+            build_dir: dist/ItchPageWizard.app
+          - os: ubuntu-latest
+            spec: null
+            asset_name: ItchPageWizard-Linux.zip
+            build_dir: dist/ItchPageWizard
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install pyinstaller
+
+    - name: Build application (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        pyinstaller --name "ItchPageWizard" \
+            --noconfirm \
+            --onedir \
+            --windowed \
+            --add-data "assets:assets" \
+            app/main.py
+
+    - name: Build application (Windows/macOS)
+      if: matrix.os != 'ubuntu-latest'
+      run: pyinstaller --noconfirm ${{ matrix.spec }}
+
+    - name: Package artifact
+      shell: bash
+      run: |
+        if [ "${{ matrix.os }}" == "windows-latest" ]; then
+          7z a ${{ matrix.asset_name }} ./${{ matrix.build_dir }}/*
+        else
+          cd dist
+          zip -r ../${{ matrix.asset_name }} $(basename ${{ matrix.build_dir }})
+        fi
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.asset_name }}
+        path: ${{ matrix.asset_name }}
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+
+      - name: Create Release and Upload Assets
+        uses: softprops/action-gh-release@v1
+        with:
+          files: artifacts/*/*
+          draft: true

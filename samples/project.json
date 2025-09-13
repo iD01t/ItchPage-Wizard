@@ -1,0 +1,41 @@
+{
+  "project": {
+    "title": "Pixel Quest Adventures",
+    "studio": "Retro Games Studio",
+    "version": "1.2.3",
+    "description": "A classic pixel art platformer with modern mechanics"
+  },
+  "cover": {
+    "background_type": "Gradient",
+    "background_color": "#2980b9",
+    "secondary_color": "#8e44ad",
+    "font": "Impact",
+    "bold": true,
+    "shadow": true,
+    "logo_path": "samples/input/logo.png"
+  },
+  "collage": {
+    "layout": "Grid",
+    "gutter": 12,
+    "images": [
+      "samples/input/screenshot1.png",
+      "samples/input/screenshot2.png",
+      "samples/input/screenshot3.png",
+      "samples/input/screenshot4.png",
+      "samples/input/screenshot5.png"
+    ]
+  },
+  "gif": {
+    "input": "samples/input/gameplay.mp4",
+    "target_size_mb": 3.0,
+    "quality": 85,
+    "start_time": 2.0,
+    "duration": 8.0
+  },
+  "output": {
+    "directory": "samples/output",
+    "export_png": true,
+    "export_jpg": false,
+    "include_metadata": true
+  }
+}
