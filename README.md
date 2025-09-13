@@ -311,7 +311,7 @@ python ../app/main.py --project project.json --batch
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) file for details.
+EULA License - see [LICENSE](LICENSE) file for details.
 
 ## 🤝 Contributing
 
